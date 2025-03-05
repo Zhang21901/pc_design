@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+  superset:
+    image: apache/superset:latest
+    container_name: superset
+    environment:
+      - DATABASE_URL=mysql+pymysql://uestcer:123456@mysql:3306/uestc_db
+      - REDIS_URL=redis://redis:6379/0
+      - SUPERSET_SECRET_KEY=a4b6f9b8a30f51b938c9d410dc8e5d801e7b5db049b1f7a354dc51e76fa3e54d
+    ports:
+      - "8088:8088"
+    depends_on:
+      - mysql
+    volumes:
+      - ./superset_home:/app/superset_home
+    restart: always
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: uestc_db
+      MYSQL_USER: uestcer
+      MYSQL_PASSWORD: 123456
+      MYSQL_CHARSET: gbk
+      MYSQL_COLLATION: gbk_chinese_ci
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    restart: always
